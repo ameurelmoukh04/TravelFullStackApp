@@ -13,19 +13,20 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $validator = Validator::make([
+        $validator = Validator::make($request->all(),[
             'name' => 'required|string|min:2',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:8'
+            'password' => 'required|string|min:4'
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => 'data not valide']);
+            return response()->json(['message' => 'data not valid']);
         }
 
         $newUser = new User();
         $newUser->name = $request->name;
         $newUser->email = $request->email;
         $newUser->password = Hash::make($request->password);
+        $newUser->role = 'Admin';
         $newUser->save();
 
         return response()->json([
